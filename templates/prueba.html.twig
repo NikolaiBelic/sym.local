@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>Prueba</title>
+	</head>
+	<body>
+		<nav>
+			<ul>
+				<li><ahref="{{ path('sym_index') }}">Proyecto</a></li>
+				<li><ahref="{{ path('sym_about') }}">Acerca de...</a></li>
+			</ul>
+		</nav>
+		<h1>Prueba</h1>
+		{% if nombre is defined %}
+			<p>Hola
+				{{ nombre }}!!</p>
+		{% else %}
+			<p>Hola mundo !!</p>
+		{% endif %}
+
+		<ul>
+			{% for nombre in nombres %}
+				<li>{{ nombre }}</li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>
