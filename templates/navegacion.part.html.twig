@@ -23,12 +23,12 @@
 							Home</a>
 					</li>
 
-					{% if app.request.pathinfo=='/galeria' %}
+					{% if app.request.pathinfo=='/imagen' %}
 						<li class="active lien">
 						{% else %}
 							<li class="lien">
 							{% endif %}
-							<a href={{ path('sym_galeria') }}>
+							<a href={{ path('sym_imagen_index') }}>
 								<i class="fa fa-home sr-icons"></i>
 								Galeria</a>
 						</li>

@@ -2,21 +2,44 @@
 
 namespace App\Entity;
 
-use App\Entity\IEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\ImagenRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
-class Imagen implements IEntity
+#[ORM\Entity(repositoryClass: ImagenRepository::class)]
+class Imagen
 {
-    /**
-     * @var string
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    private $nombre;
-    private $descripcion;
-    private $categoria;
-    private $numVisualizaciones;
-    private $numLikes;
-    private $numDownloads;
+    #[ORM\Column(length: 100)]
+    /**
+     * @Assert\File(
+     *mimeTypes={"image/jpeg","image/png"},
+     *mimeTypesMessage = "Solamente se permiten archivos jpeg o png.")
+     */
+    private ?string $nombre = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $descripcion = null;
+
+    #[ORM\Column]
+    private ?int $categoria = null;
+
+    #[ORM\Column]
+    private ?int $numVisualizaciones = null;
+
+    #[ORM\Column]
+    private ?int $numLikes = null;
+
+    #[ORM\Column]
+    private ?int $numDownloads = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $password = null;
 
     const RUTA_IMAGENES_PORTFOLIO = 'images/index/portfolio/';
     const RUTA_IMAGENES_GALERIA = 'images/index/gallery/';
@@ -24,7 +47,7 @@ class Imagen implements IEntity
     const RUTA_IMAGENES_CLIENTES = 'images/clients/';
     const RUTA_IMAGENES_SUBIDAS = 'images/galeria/';
 
-    function __construct($nombre = "", $descripcion = "", $categoria = 0, $numVisualizaciones = 0, $numLikes = 0, $numDownloads = 0)
+    function __construct($nombre = "", $descripcion = "", $categoria = 0, $numVisualizaciones = 0, $numLikes = 0, $numDownloads = 0, $password = "")
     {
         $this->id = null;
         $this->nombre = $nombre;
@@ -33,6 +56,7 @@ class Imagen implements IEntity
         $this->numVisualizaciones = $numVisualizaciones;
         $this->numLikes = $numLikes;
         $this->numDownloads = $numDownloads;
+        $this->password = $password;
     }
 
     public function getId(): ?int
@@ -40,25 +64,27 @@ class Imagen implements IEntity
         return $this->id;
     }
 
-    public function getNombre()
+    public function getNombre(): ?string
     {
         return $this->nombre;
     }
 
-    public function setNombre($nombre): Imagen
+    public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
+
         return $this;
     }
 
-    public function getDescripcion()
+    public function getDescripcion(): ?string
     {
         return $this->descripcion;
     }
 
-    public function setDescripcion($descripcion): Imagen
+    public function setDescripcion(string $descripcion): static
     {
         $this->descripcion = $descripcion;
+
         return $this;
     }
 
@@ -67,48 +93,59 @@ class Imagen implements IEntity
         return $this->categoria;
     }
 
-    public function setCategoria($categoria): Imagen
+    public function setCategoria(int $categoria): static
     {
         $this->categoria = $categoria;
+
         return $this;
     }
 
-    public function getNumVisualizaciones()
+    public function getNumVisualizaciones(): ?int
     {
         return $this->numVisualizaciones;
     }
 
-    public function setNumVisualizaciones($numVisualizaciones): Imagen
+    public function setNumVisualizaciones(int $numVisualizaciones): static
     {
         $this->numVisualizaciones = $numVisualizaciones;
+
         return $this;
     }
 
-    public function getNumLikes()
+    public function getNumLikes(): ?int
     {
         return $this->numLikes;
     }
 
-    public function setNumLikes($numLikes): Imagen
+    public function setNumLikes(int $numLikes): static
     {
         $this->numLikes = $numLikes;
+
         return $this;
     }
 
-    public function getNumDownloads()
+    public function getNumDownloads(): ?int
     {
         return $this->numDownloads;
     }
 
-    public function setNumDownloads($numDownloads): Imagen
+    public function setNumDownloads(int $numDownloads): static
     {
         $this->numDownloads = $numDownloads;
+
         return $this;
     }
 
-    public function __toString()
+    public function getPassword(): ?string
     {
-        return $this->descripcion;
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
     }
 
     public function getUrlPortfolio()
@@ -134,18 +171,5 @@ class Imagen implements IEntity
     public function getUrlLogos()
     {
         return self::RUTA_IMAGENES_LOGOS . $this->getNombre();
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'nombre' => $this->getNombre(),
-            'descripcion' => $this->getDescripcion(),
-            'numVisualizaciones' => $this->getNumVisualizaciones(),
-            'numLikes' => $this->getNumLikes(),
-            'numDownloads' => $this->getNumDownloads(),
-            'categoria' => $this->getCategoria()
-        ];
     }
 }
