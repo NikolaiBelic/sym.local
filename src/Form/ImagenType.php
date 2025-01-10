@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Imagen;
+use App\Entity\Categoria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -38,10 +40,13 @@ class ImagenType extends AbstractType
                 'required' => false,
                 'label_attr' => ['class' => 'etiqueta']
             ])
-            ->add('categoria', NumberType::class, [
+            /* ->add('categoria', NumberType::class, [
                 'label' => 'Categoría:',
                 'label_attr' => ['class' => 'etiqueta', 'value' => '1'],
                 'data' => '1'
+            ]) */
+            ->add('categoria', EntityType::class, [
+                'class' => Categoria::class
             ])
             ->add('numVisualizaciones')
             ->add('numLikes')

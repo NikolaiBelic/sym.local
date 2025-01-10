@@ -27,9 +27,6 @@ class Imagen
     private ?string $descripcion = null;
 
     #[ORM\Column]
-    private ?int $categoria = null;
-
-    #[ORM\Column]
     private ?int $numVisualizaciones = null;
 
     #[ORM\Column]
@@ -40,6 +37,10 @@ class Imagen
 
     #[ORM\Column(length: 100)]
     private ?string $password = null;
+
+    #[ORM\ManyToOne(inversedBy: 'imagens')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categoria $categoria = null;
 
     const RUTA_IMAGENES_PORTFOLIO = 'images/index/portfolio/';
     const RUTA_IMAGENES_GALERIA = 'images/index/gallery/';
@@ -52,7 +53,7 @@ class Imagen
         $this->id = null;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
-        $this->categoria = $categoria;
+        /* $this->categoria = $categoria; */
         $this->numVisualizaciones = $numVisualizaciones;
         $this->numLikes = $numLikes;
         $this->numDownloads = $numDownloads;
@@ -84,18 +85,6 @@ class Imagen
     public function setDescripcion(string $descripcion): static
     {
         $this->descripcion = $descripcion;
-
-        return $this;
-    }
-
-    public function getCategoria(): ?int
-    {
-        return $this->categoria;
-    }
-
-    public function setCategoria(int $categoria): static
-    {
-        $this->categoria = $categoria;
 
         return $this;
     }
@@ -171,5 +160,17 @@ class Imagen
     public function getUrlLogos()
     {
         return self::RUTA_IMAGENES_LOGOS . $this->getNombre();
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
+
+        return $this;
     }
 }
