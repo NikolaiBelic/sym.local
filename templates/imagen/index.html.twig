@@ -8,9 +8,17 @@
 
 	<form action="{{ path('app_imagen_index_busqueda') }}" method="post">
 		<label>Búsqueda:</label>
-		<input type="text" name="busqueda" id="busqueda" value="">
+		<input type="text" name="busqueda" id="busqueda" value="{{ busqueda | default('') }}">
+		<input type="date" name="fechaInicial" id="fechaInicial" value="{{ fechaInicial | default('') }}">
+		<input type="date" name="fechaFinal" id="fechaFinal" value="{{ fechaFinal | default('') }}">
 		<input type="submit" value="Buscar">
 	</form>
+
+	{% for message in app.flashes('mensaje') %}
+		<div class="alert alert-primary" role="alert">
+			{{ message }}
+		</div>
+	{% endfor %}
 
 	<table class="table">
 		<thead>
@@ -26,6 +34,7 @@
 				<th>
 					<a href="{{ path("sym_imagen_index_ordenado", {ordenacion: 'categoria'}) }}">Categoría</a>
 				</th>
+				<th>Fecha</th>
 				<th>NumVisualizaciones</th>
 				<th>NumLikes</th>
 				<th>NumDownloads</th>
@@ -40,6 +49,7 @@
 					<td><img src="{{ asset(imagen.getUrlSubidas()) }}" alt="{{ imagen.nombre }}" width="100px"></td>
 					<td>{{ imagen.descripcion }}</td>
 					<td>{{ imagen.categoria }}</td>
+					<td>{{ imagen.fecha | date('d/m/Y') }}</td>
 					<td>{{ imagen.numVisualizaciones }}</td>
 					<td>{{ imagen.numLikes }}</td>
 					<td>{{ imagen.numDownloads }}</td>

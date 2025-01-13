@@ -15,6 +15,9 @@
 			{{ form_row(form.descripcion) }}
 		</div>
 	</div>
+	<div class="col-md-3">
+		{{ form_row(form.fecha,{'label':'Fecha de creación:','label_attr': {'class':'etiqueta'}}) }}
+	</div>
 	<div class="row">
 		<div class="col-md-12">
 			{{ form_row(form.password) }}
@@ -35,4 +38,5 @@
 		<button class="btn">{{ button_label|default('Guardar') }}</button>
 	</div>
 </div>
+{{ form_errors(form) }}
 {{ form_end(form) }}

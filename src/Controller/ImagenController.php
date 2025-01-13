@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\BLL\ImagenBLL;
 use App\Entity\Imagen;
 use App\Form\ImagenType;
 use App\Repository\ImagenRepository;
@@ -17,9 +18,11 @@ final class ImagenController extends AbstractController
 {
     #[Route(name: 'sym_imagen_index', methods: ['GET'])]
     #[Route('/orden/{ordenacion}', name: 'sym_imagen_index_ordenado', methods: ['GET'])]
-    public function index(Request $requestStack, ImagenRepository $imagenRepository, string $ordenacion = null): Response
+    public function index(Request $requestStack, ImagenBLL $imagenBLL, ImagenRepository $imagenRepository, string $ordenacion = null): Response
     {
-        if (!is_null($ordenacion)) { // Cuando se establece un tipo de ordenación específico
+        $imagenes = $imagenBLL->getImagenesConOrdenacion($ordenacion);
+
+        /* if (!is_null($ordenacion)) { // Cuando se establece un tipo de ordenación específico
             $tipoOrdenacion = 'asc';
             // Por defecto si no se había guardado antes en la variable de sesión
             $session = $requestStack->getSession();
@@ -42,7 +45,7 @@ final class ImagenController extends AbstractController
             $ordenacion = 'id';
             $tipoOrdenacion = 'asc';
         }
-        $imagenes = $imagenRepository->findImagenesConCategoria($ordenacion, $tipoOrdenacion);
+        $imagenes = $imagenRepository->findImagenesConCategoria($ordenacion, $tipoOrdenacion); */
         return $this->render('imagen/index.html.twig', [
             'imagens' => $imagenes
         ]);
@@ -51,10 +54,15 @@ final class ImagenController extends AbstractController
     #[Route('/busqueda', name: 'app_imagen_index_busqueda', methods: ['POST'])]
     public function busqueda(Request $request, ImagenRepository $imagenRepository): Response
     {
+        $fechaInicial = $request->request->get('fechaInicial');
+        $fechaFinal = $request->request->get('fechaFinal');
         $busqueda = $request->request->get('busqueda');
-        $imagenes = $imagenRepository->findLikeDescripcion($busqueda);
+        $imagenes = $imagenRepository->findImagenes($busqueda, $fechaInicial, $fechaFinal);
         return $this->render('imagen/index.html.twig', [
-            'imagens' => $imagenes
+            'imagens' => $imagenes,
+            'busqueda' => $busqueda,
+            'fechaInicial' => $fechaInicial,
+            'fechaFinal' => $fechaFinal
         ]);
     }
 
@@ -77,6 +85,8 @@ final class ImagenController extends AbstractController
             $imagen->setNombre($fileName);
             $entityManager->persist($imagen);
             $entityManager->flush();
+
+            $this->addFlash('mensaje', 'Se ha creado la imagen ' . $imagen->getNombre());
 
             return $this->redirectToRoute('sym_imagen_index', [], Response::HTTP_SEE_OTHER);
         }

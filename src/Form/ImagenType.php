@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -48,6 +49,8 @@ class ImagenType extends AbstractType
             ->add('categoria', EntityType::class, [
                 'class' => Categoria::class
             ])
+            ->add('fecha',DateType::class, [
+                'widget' => 'single_text'])
             ->add('numVisualizaciones')
             ->add('numLikes')
             ->add('numDownloads')
