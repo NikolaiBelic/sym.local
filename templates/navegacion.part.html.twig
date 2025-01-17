@@ -60,6 +60,20 @@
 											<i class="fa fa-home sr-icons"></i>
 											Contact</a>
 									</li>
+									{% if is_granted('IS_AUTHENTICATED') %}
+										<li class=" lien">
+											<a href={{ path('app_logout') }}>
+												<i class="fa fa-sign-out sr-icons"></i>
+												Logout -
+												{{app.user.username }}</a>
+										</li>
+									{% else %}
+										<li class=" lien">
+											<a href={{ path('app_login') }}>
+												<i class="fa fa-sign-in sr-icons"></i>
+												Login</a>
+										</li>
+									{% endif %}
 								</ul>
 							</div>
 						</div>

@@ -97,15 +97,7 @@ final class ImagenController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'sym_imagen_show', methods: ['GET'])]
-    public function show(Imagen $imagen): Response
-    {
-        return $this->render('imagen/show.html.twig', [
-            'imagen' => $imagen,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'sym_imagen_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'sym_imagen_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Imagen $imagen, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ImagenType::class, $imagen);
@@ -120,6 +112,14 @@ final class ImagenController extends AbstractController
         return $this->render('imagen/edit.html.twig', [
             'imagen' => $imagen,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'sym_imagen_show', methods: ['GET'])]
+    public function show(Imagen $imagen): Response
+    {
+        return $this->render('imagen/show.html.twig', [
+            'imagen' => $imagen,
         ]);
     }
 
