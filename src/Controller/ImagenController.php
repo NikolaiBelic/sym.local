@@ -57,7 +57,8 @@ final class ImagenController extends AbstractController
         $fechaInicial = $request->request->get('fechaInicial');
         $fechaFinal = $request->request->get('fechaFinal');
         $busqueda = $request->request->get('busqueda');
-        $imagenes = $imagenRepository->findImagenes($busqueda, $fechaInicial, $fechaFinal);
+        $usuario = $this->getUser();
+        $imagenes = $imagenRepository->findImagenes($busqueda, $fechaInicial, $fechaFinal, $usuario);
         return $this->render('imagen/index.html.twig', [
             'imagens' => $imagenes,
             'busqueda' => $busqueda,
@@ -83,6 +84,9 @@ final class ImagenController extends AbstractController
             $file->move($this->getParameter('images_directory_subidas'), $fileName);
             // Actualizamos el nombre del archivo en el objeto imagen al nuevo generado
             $imagen->setNombre($fileName);
+            //Actualizamos el id del usuario que añade la imagen
+            $usuario = $this->getUser();
+            $imagen->setUsuario($usuario);
             $entityManager->persist($imagen);
             $entityManager->flush();
 
@@ -126,6 +130,8 @@ final class ImagenController extends AbstractController
     #[Route('/{id}', name: 'sym_imagen_delete', methods: ['POST'])]
     public function delete(Request $request, Imagen $imagen, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         if ($this->isCsrfTokenValid('delete' . $imagen->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($imagen);
             $entityManager->flush();

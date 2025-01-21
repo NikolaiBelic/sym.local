@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,6 +34,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int, Imagen>
+     */
+    #[ORM\OneToMany(targetEntity: Imagen::class, mappedBy: 'usuario', orphanRemoval: true)]
+    private Collection $imagenes;
+
+    public function __construct()
+    {
+        $this->imagenes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,5 +119,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Imagen>
+     */
+    public function getImagenes(): Collection
+    {
+        return $this->imagenes;
+    }
+
+    public function addImagene(Imagen $imagene): static
+    {
+        if (!$this->imagenes->contains($imagene)) {
+            $this->imagenes->add($imagene);
+            $imagene->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImagene(Imagen $imagene): static
+    {
+        if ($this->imagenes->removeElement($imagene)) {
+            // set the owning side to null (unless already changed)
+            if ($imagene->getUsuario() === $this) {
+                $imagene->setUsuario(null);
+            }
+        }
+
+        return $this;
     }
 }

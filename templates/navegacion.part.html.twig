@@ -22,16 +22,17 @@
 							<i class="fa fa-home sr-icons"></i>
 							Home</a>
 					</li>
-
-					{% if app.request.pathinfo=='/imagen' %}
-						<li class="active lien">
-						{% else %}
-							<li class="lien">
-							{% endif %}
-							<a href={{ path('sym_imagen_index') }}>
-								<i class="fa fa-home sr-icons"></i>
-								Galeria</a>
-						</li>
+					{% if is_granted('IS_AUTHENTICATED') %}
+						{% if app.request.pathinfo=='/imagen' %}
+							<li class="active lien">
+							{% else %}
+								<li class="lien">
+								{% endif %}
+								<a href={{ path('sym_imagen_index') }}>
+									<i class="fa fa-home sr-icons"></i>
+									Galeria</a>
+							</li>
+						{% endif %}
 
 						{% if app.request.pathinfo=='/about' %}
 							<li class="active lien">
