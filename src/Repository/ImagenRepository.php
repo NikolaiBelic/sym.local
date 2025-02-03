@@ -54,27 +54,33 @@ class ImagenRepository extends ServiceEntityRepository
     /**
      * @return Imagen[] Returns an array of Imagen objects
      */
-    public function findImagenes(string $descripcion, string $fechaInicial, $fechaFinal, User $usuario): array
+    public function findImagenes(?string $order, ?string $descripcion = null, ?string
+    $fechaInicial = null, ?string $fechaFinal = null, ?User $usuario = null): array
     {
-        $qb = $this->createQueryBuilder('i');
+        $qb = $this->createQueryBuilder('imagen');
         if (!is_null($descripcion) && $descripcion !== '') {
-            $qb->andWhere($qb->expr()->orX(
-                $qb->expr()->like('i.descripcion', ':val'),
-                $qb->expr()->like('i.nombre', ':val')
-            ))
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like('imagen.descripcion', ':val'),
+                    $qb->expr()->like('imagen.nombre', ':val')
+                )
+            )
                 ->setParameter('val', '%' . $descripcion . '%');
         }
         if (!is_null($fechaInicial) && $fechaInicial !== '') {
             $dtFechaInicial = DateTime::createFromFormat('Y-m-d', $fechaInicial);
-            $qb->andWhere($qb->expr()->gte('i.fecha', ':fechaInicial'))
+            $qb->andWhere($qb->expr()->gte('imagen.fecha', ':fechaInicial'))
                 ->setParameter('fechaInicial', $dtFechaInicial);
         }
         if (!is_null($fechaFinal) && $fechaFinal !== '') {
             $dtFechaFinal = DateTime::createFromFormat('Y-m-d', $fechaFinal);
-            $qb->andWhere($qb->expr()->lte('i.fecha', ':fechaFinal'))
+            $qb->andWhere($qb->expr()->lte('imagen.fecha', ':fechaFinal'))
                 ->setParameter('fechaFinal', $dtFechaFinal);
         }
-        $this->addUserFilter($qb, $usuario);
+        if (!is_null($usuario))
+            $this->addUserFilter($qb, $usuario);
+        if (!is_null($order))
+            $qb->addOrderBy('imagen.' . $order, 'ASC');
         return $qb->getQuery()->getResult();
     }
 

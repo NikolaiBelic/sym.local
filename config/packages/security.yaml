@@ -26,7 +26,9 @@ security:
                 interval: '10 minutes' # tiempo de espera hasta poder volver a intentar acceder
             logout:
                 path: app_logout
-
+        api:
+            pattern: ^/api
+            stateless: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -48,6 +50,7 @@ security:
         - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
